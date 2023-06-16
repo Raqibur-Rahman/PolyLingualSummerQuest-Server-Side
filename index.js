@@ -37,11 +37,22 @@ async function run() {
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
     const instructorsCollection = client.db('PolyLingualDB').collection('InstructorsCollections');
+    const cartCollection = client.db('PolyLingualDB').collection('cartCollections');
 
     app.get('/instructors',async(req,res)=>{
       const result=await instructorsCollection.find().toArray();
       res.send(result);
     })
+
+
+    //cart collection
+    app.post('/carts', async(req,res)=>{
+      const item = req.body;
+      console.log(item);
+      const result = await cartCollection.insertOne(item);
+      res.send(result);
+    })
+
     
 
   } catch (error) {
@@ -62,3 +73,4 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
