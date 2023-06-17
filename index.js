@@ -36,6 +36,7 @@ async function run() {
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
+    const usersCollection = client.db('PolyLingualDB').collection('users');
     const instructorsCollection = client.db('PolyLingualDB').collection('InstructorsCollections');
     const cartCollection = client.db('PolyLingualDB').collection('cartCollections');
 
@@ -45,11 +46,22 @@ async function run() {
     })
 
 
+
+    //users collection api
+    app.post('/users',async(req,res)=>{
+      const user = req.body;
+      const result = await usersCollection.insertOne(user);
+      res.send(result)
+    })
+
+
+
+
     //cart collection apis
 
     app.get('/carts', async (req, res) => {
       const email = req.query.email;
-      console.log(email);
+      // console.log(email);
       if (!email) {
         res.send([]);
       }
@@ -66,7 +78,12 @@ async function run() {
     })
 
 
-
+    app.delete('/carts/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)};
+      const result = await cartCollection.deleteOne(query);
+      res.send(result);
+    })
 
 
   } catch (error) {
