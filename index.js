@@ -11,7 +11,7 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 const corsConfig = {
   origin: '*',
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE']
+  methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH']
 }
 app.use(cors(corsConfig))
 app.use(express.json());
@@ -67,6 +67,19 @@ async function run() {
       }
       const result = await usersCollection.insertOne(user);
       res.send(result)
+    })
+
+    app.patch('/users/admin/:id', async(req,res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const updateDoc = {
+        $set:{
+          role:'admin'
+        },
+      };
+
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      res.send(result);
     })
 
 
